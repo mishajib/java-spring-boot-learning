@@ -5,6 +5,7 @@ import com.example.blog.model.Blog;
 import com.example.blog.service.BlogService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,8 +22,12 @@ public class BlogController {
     private BlogService blogService;
 
     @GetMapping
-    public List<Blog> getAll() {
-        return blogService.getAllBlogs();
+    public Page<Blog> getAll(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy
+    ) {
+        return blogService.getAllBlogs(page, size, sortBy);
     }
 
     @GetMapping("/{id}")
