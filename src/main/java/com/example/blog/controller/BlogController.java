@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -31,12 +31,7 @@ public class BlogController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody BlogRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-        }
+    public ResponseEntity<?> create(@Valid @RequestBody BlogRequest request) {
         Blog blog = blogService.createBlog(request);
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
