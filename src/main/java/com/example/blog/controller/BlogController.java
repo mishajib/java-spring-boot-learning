@@ -8,11 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -79,4 +78,24 @@ public class BlogController {
         response.put("message", "Blog deleted successfully!");
         return ResponseEntity.ok(response);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException exception) {
+        var fieldErrors = new HashMap<String, String>();
+
+        exception.getBindingResult().getFieldErrors().forEach(error -> {
+            fieldErrors.put(error.getField(), error.getDefaultMessage());
+        });
+
+        // Prepare response body
+        var response = new HashMap<String, Object>();
+
+        response.put("message", fieldErrors.size() == 1 ? 
+                fieldErrors.values().iterator().next() : "One or more fields are invalid!");
+
+        response.put("errors", fieldErrors);
+
+        return ResponseEntity.unprocessableEntity().body(response);
+    }
+
 }

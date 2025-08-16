@@ -2,6 +2,9 @@ package com.example.blog.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Entity
@@ -22,7 +25,7 @@ public class Blog {
     @Column(nullable = false)
     private String  content;
 
-    @NotBlank(message = "The isPublished is required.")
+    @NotNull(message = "The isPublished is required.")
     @Column(nullable = false)
     private Boolean isPublished;
 }
